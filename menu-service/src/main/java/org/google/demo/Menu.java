@@ -28,6 +28,18 @@ public class Menu extends PanacheEntity {
     @Column(name="tag_line")
     public String tagLine; //"sweets delight", "super spicy"
 
+    @Column(name="description")
+    public String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
     @Column(name="item_image_url")
     public URL itemImageURL;
 

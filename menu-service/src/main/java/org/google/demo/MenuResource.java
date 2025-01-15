@@ -60,6 +60,7 @@ public class MenuResource {
         if (menu == null || menu.id != null) 
             throw new WebApplicationException("id != null");
             menu.status=Status.Processing;
+            menu.description = menu.description;
         menu.persist();
         return Response.ok(menu).status(200).build();
     }
@@ -77,6 +78,7 @@ public class MenuResource {
         if (menu.itemName != null) entity.itemName=menu.itemName;
         if (menu.itemPrice != null) entity.itemPrice=menu.itemPrice;
         if (menu.tagLine != null) entity.tagLine=menu.tagLine;
+        if (menu.description != null) entity.description = menu.description;
         entity.spiceLevel=menu.spiceLevel;
         if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
         if (menu.itemThumbnailURL != null) entity.itemThumbnailURL = menu.itemThumbnailURL;
