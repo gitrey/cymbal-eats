@@ -2,27 +2,39 @@ package org.google.demo;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import io.quarkus.panache.common.Sort;
 
+/**
+ * MenuResource class
+ * This class is a REST controller for the Menu entity.
+ * It handles requests for all menu items, specific menu items by ID,
+ * and menu items by status (ready, failed, processing).
+ * It also handles creating, updating, and deleting menu items.
+ */
 @Path ("/menu")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class MenuResource {
 
-
+    /**
+     * getAll method
+     * This method returns all menu items.
+     * @return list of Menu items
+     * @throws Exception if there is an error.
+     */
     @GET
     public List<Menu> getAll() throws Exception {
 
@@ -30,30 +42,61 @@ public class MenuResource {
         
     }
 
+    /**
+     * get method
+     * This method returns a single menu item by its ID.
+     * @param id The ID of the menu item to retrieve.
+     * @return Menu item with the matching id.
+     * @throws Exception if there is an error.
+     */
     @GET
     @Path("{id}")
     public Menu get(@PathParam("id") Long id) throws Exception {
         return Menu.findById(id);
     }
 
+    /**
+     * getAllReady method
+     * This method returns all menu items with status ready.
+     * @return list of Menu items with status ready.
+     * @throws Exception if there is an error.
+     */
     @GET
     @Path("/ready")
     public List<Menu> getAllReady() throws Exception {
         return Menu.findReady();
     }
 
+    /**
+     * getAllFailed method
+     * This method returns all menu items with status Failed.
+     * @return list of Menu items with status failed.
+     * @throws Exception if there is an error.
+     */
     @GET
     @Path("/failed")
     public List<Menu> getAllFailed() throws Exception {
         return Menu.findFailed();
     }
 
+    /**
+     * getAllProcessing method
+     * This method returns all menu items with status Processing.
+     * @return list of Menu items with status processing.
+     * @throws Exception if there is an error.
+     */
     @GET
     @Path("/processing")
     public List<Menu> getAllProcessing() throws Exception {
         return Menu.findProcessing();
     }
     
+    /**
+     * create method
+     * This method creates a new menu item.
+     * @param menu the menu to create.
+     * @return Response with status 200 if the creation was successfull
+     */
     @POST
     @Transactional
     public Response create(Menu menu) {
@@ -64,6 +107,13 @@ public class MenuResource {
         return Response.ok(menu).status(200).build();
     }
 
+    /**
+     * update method
+     * This method updates an existing menu item.
+     * @param id the id of the menu item to update.
+     * @param menu the menu item to update.
+     * @return the updated Menu item.
+     */
     @PUT
     @Transactional
     @Path("{id}")
@@ -85,6 +135,12 @@ public class MenuResource {
         return entity;
     }
 
+    /**
+     * delete method
+     * This method deletes a menu item.
+     * @param id the id of the menu item to delete.
+     * @return Response with status 204 if the delete was successfull.
+     */
     @DELETE
     @Path("{id}")
     @Transactional
