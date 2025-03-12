@@ -34,8 +34,6 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication(exclude = ZipkinAutoConfiguration.class)
 public class BalanceReaderApplication {
 
-    private static final Logger LOGGER =
-        LogManager.getLogger(BalanceReaderApplication.class);
 
     private static final String[] EXPECTED_ENV_VARS = {
         "VERSION",
@@ -52,21 +50,18 @@ public class BalanceReaderApplication {
         for (String v : EXPECTED_ENV_VARS) {
             String value = System.getenv(v);
             if (value == null) {
-                LOGGER.fatal(String.format(
-                    "%s environment variable not set", v));
+
                 System.exit(1);
             }
         }
         SpringApplication.run(BalanceReaderApplication.class, args);
-        LOGGER.log(Level.forName("STARTUP", Level.FATAL.intLevel()),
-            String.format("Started BalanceReader service. Log level is: %s",
-                LOGGER.getLevel().toString()));
+
 
     }
 
     @PreDestroy
     public void destroy() {
-        LOGGER.info("BalanceReader service shutting down");
+
     }
 
 
@@ -82,8 +77,6 @@ public class BalanceReaderApplication {
                     enableMetricsExport = false;
                 }
 
-                LOGGER.info(String.format("Enable metrics export: %b",
-                    enableMetricsExport));
                 return enableMetricsExport;
             }
 

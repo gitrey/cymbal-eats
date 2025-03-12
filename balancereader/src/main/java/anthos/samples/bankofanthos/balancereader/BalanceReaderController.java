@@ -42,9 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public final class BalanceReaderController {
 
-    private static final Logger LOGGER =
-        LogManager.getLogger(BalanceReaderController.class);
-
     @Autowired
     private TransactionRepository dbRepo;
 
@@ -69,15 +66,15 @@ public final class BalanceReaderController {
         @Value("${VERSION}") final String version) {
         // Initialize JWT verifier.
         this.verifier = verifier;
-        LOGGER.debug("Initialized JWT verifier");
+        
         // Initialize cache
         this.cache = cache;
         GuavaCacheMetrics.monitor(meterRegistry, this.cache, "Guava");
-        LOGGER.debug("Initialized cache");
+        
         this.version = version;
         // Initialize transaction processor.
         this.ledgerReader = reader;
-        LOGGER.debug("Initialized transaction processor");
+        
         this.ledgerReader.startWithCallback(transaction -> {
             final String fromId = transaction.getFromAccountNum();
             final String fromRouting = transaction.getFromRoutingNum();
@@ -128,7 +125,7 @@ public final class BalanceReaderController {
     public ResponseEntity liveness() {
         if (!ledgerReader.isAlive()) {
             // Background thread died.
-            LOGGER.error("Ledger reader not healthy");
+            
             return new ResponseEntity<>("Ledger reader not healthy",
                 HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -156,8 +153,7 @@ public final class BalanceReaderController {
             DecodedJWT jwt = verifier.verify(bearerToken);
             // Check that the authenticated user can access this account.
             if (!accountId.equals(jwt.getClaim("acct").asString())) {
-                LOGGER.error("Failed to retrieve account balance: "
-                    + "not authorized");
+                
                 return new ResponseEntity<>("not authorized",
                     HttpStatus.UNAUTHORIZED);
             }
@@ -165,11 +161,10 @@ public final class BalanceReaderController {
             Long balance = cache.get(accountId);
             return new ResponseEntity<Long>(balance, HttpStatus.OK);
         } catch (JWTVerificationException e) {
-            LOGGER.error("Failed to retrieve account balance: not authorized");
-            return new ResponseEntity<>("not authorized",
+             return new ResponseEntity<>("not authorized",
                 HttpStatus.UNAUTHORIZED);
         } catch (ExecutionException | UncheckedExecutionException e) {
-            LOGGER.error("Cache error");
+            
             return new ResponseEntity<>("cache error",
                 HttpStatus.INTERNAL_SERVER_ERROR);
         }
