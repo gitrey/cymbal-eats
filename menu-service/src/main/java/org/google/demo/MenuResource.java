@@ -80,6 +80,8 @@ public class MenuResource {
         entity.spiceLevel=menu.spiceLevel;
         if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
         if (menu.itemThumbnailURL != null) entity.itemThumbnailURL = menu.itemThumbnailURL;
+        if (menu.description != null) entity.description = menu.description;
+        if (menu.rating != 0) entity.rating = menu.rating;
         if (menu.status != null) entity.status = menu.status;
 
         return entity;
