@@ -1,6 +1,6 @@
 # AI enabled code reviews using Gemini CLI
 # - Requires GCP service account stored in GOOGLE_API_CREDENTIALS secret
-name: Code Review with Gemini CLI
+name: Code Reviews
 run-name: Reviewing ${{ github.actor }}'s code changes  🚀
 on: [push, workflow_dispatch]
 env:
@@ -8,7 +8,7 @@ env:
   PROJECT_ID: '${{ secrets.PROJECT_ID }}'
   JIRA_CLOUD: true
 jobs:
-  DevAI-Reviews:
+  Code-Reviews:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
