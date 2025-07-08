@@ -85,6 +85,10 @@ public class MenuResource {
         if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
         if (menu.itemThumbnailURL != null) entity.itemThumbnailURL = menu.itemThumbnailURL;
         if (menu.status != null) entity.status = menu.status;
+        if (menu.description != null) entity.description = menu.description;
+        // Check for 0.0 as it's the default float value if not provided,
+        // assuming ratings are positive.
+        if (menu.rating != 0.0f) entity.rating = menu.rating;
 
         return entity;
     }
