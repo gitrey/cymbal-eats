@@ -62,4 +62,29 @@ public class MenuResourceTest {
             .body("id", notNullValue())
             .body("itemName", is("Test Item"));
     }
+
+    @Test
+    public void testCreateMenuWithRatingAndDescription() {
+        Menu menu = new Menu();
+        menu.itemName = "Test Item";
+        menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
+        menu.spiceLevel = 1;
+        menu.tagLine = "Test Tagline";
+        menu.itemImageURL = null; // Set to null or a valid URL
+        menu.itemThumbnailURL = null; // Set to null or a valid URL
+        menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = 4;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().post("/menu")
+            .then()
+            .statusCode(200)
+            .body("id", notNullValue())
+            .body("itemName", is("Test Item"))
+            .body("description", is("Test Description"))
+            .body("rating", is(4));
+    }
 }
