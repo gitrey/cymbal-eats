@@ -1,0 +1,31 @@
+# AI enabled code reviews using Gemini CLI
+# - Requires GCP service account stored in GOOGLE_API_CREDENTIALS secret
+name: Code Review with Gemini CLI
+run-name: Reviewing ${{ github.actor }}'s code changes  🚀
+on: [push, workflow_dispatch]
+env:
+  LOCATION: '${{ secrets.LOCATION }}'
+  PROJECT_ID: '${{ secrets.PROJECT_ID }}'
+  JIRA_CLOUD: true
+jobs:
+  DevAI-Reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+
+      - run: cd ${{ github.workspace }}
+      - run: npm install -g @google/gemini-cli
+
+      - name: Authorize. with GCP 
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_API_CREDENTIALS }}'
+          project_id: '${{ secrets.PROJECT_ID }}'
+      - name: Test Coverage Review
+        run: echo '## Comments Coverage Review Results 🚀' >> $GITHUB_STEP_SUMMARY
+      - run: echo "$(gemini -p 'review menu-service java code and check that all classes are properly documented and return findings as text to the console' -y" >> $GITHUB_STEP_SUMMARY
+        shell: bash
