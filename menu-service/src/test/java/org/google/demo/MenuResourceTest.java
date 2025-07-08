@@ -206,7 +206,7 @@ public class MenuResourceTest {
         WebApplicationException exception = assertThrows(WebApplicationException.class, () -> {
             menuResource.update(1L, updatedMenuInfo);
         });
-        assertEquals("Menu item with id1does not exist", exception.getMessage());
+        assertEquals("Menu item with id 1 does not exist", exception.getMessage());
         assertEquals(404, exception.getResponse().getStatus());
     }
 
