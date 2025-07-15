@@ -62,4 +62,59 @@ public class MenuResourceTest {
             .body("id", notNullValue())
             .body("itemName", is("Test Item"));
     }
+
+    @Test
+    public void testUpdateMenuWithDescriptionAndRating() {
+        Menu menu = new Menu();
+        menu.description = "New Description";
+        menu.rating = 5;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200)
+            .body("description", is("New Description"))
+            .body("rating", is(5));
+    }
+
+    @Test
+    public void testUpdateMenuWithNullRating() {
+        Menu menu = new Menu();
+        menu.rating = null;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200);
+    }
+
+    @Test
+    public void testUpdateMenuWithZeroRating() {
+        Menu menu = new Menu();
+        menu.rating = 0;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200);
+    }
+
+    @Test
+    public void testUpdateMenuWithInvalidRating() {
+        Menu menu = new Menu();
+        menu.rating = 6;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200);
+    }
 }
