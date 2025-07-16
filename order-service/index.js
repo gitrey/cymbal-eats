@@ -132,7 +132,7 @@ async function createOrderRecord(requestBody) {
 
 async function subtractFromInventory(orderItems) {
   if (!Array.isArray(orderItems)) {
-    return;
+    throw new Error('orderItems must be an array.');
   }
   await inventoryServer.post("/updateInventoryItem", 
     orderItems.map(x => ({
