@@ -34,8 +34,20 @@ public class Menu extends PanacheEntity {
     @Column(name="item_thumbnail_url")
     public URL itemThumbnailURL;
 
+    @Column(name="item_description")
+    public String description;
+
+    @Column(name="item_rating")
+    public Integer rating;
+
     @Column(name="item_status")
     public Status status;
+
+    @Column(name="item_description")
+    public String description;
+
+    @Column(name="item_rating")
+    public Integer rating;
 
     @CreationTimestamp
     @Column(name="creation_timestamp")
