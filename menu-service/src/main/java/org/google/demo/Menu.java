@@ -37,6 +37,14 @@ public class Menu extends PanacheEntity {
     @Column(name="item_status")
     public Status status;
 
+    @Column(name="item_description")
+    public String description;
+
+    @jakarta.validation.constraints.Min(1)
+    @jakarta.validation.constraints.Max(5)
+    @Column(name="item_rating")
+    public Integer rating;
+
     @CreationTimestamp
     @Column(name="creation_timestamp")
     public LocalDateTime createDateTime;

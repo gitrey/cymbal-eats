@@ -85,6 +85,8 @@ public class MenuResource {
         if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
         if (menu.itemThumbnailURL != null) entity.itemThumbnailURL = menu.itemThumbnailURL;
         if (menu.status != null) entity.status = menu.status;
+        if (menu.description != null) entity.description = menu.description;
+        if (menu.rating != null) entity.rating = menu.rating;
 
         return entity;
     }
