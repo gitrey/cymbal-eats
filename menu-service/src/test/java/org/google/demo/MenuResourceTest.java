@@ -33,6 +33,9 @@ public class MenuResourceTest {
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
 
+        menu.description = "Test Description";
+        menu.rating = 4;
+
         Mockito.when(menuRepository.findById(1L)).thenReturn(menu);
         Mockito.when(menuRepository.listAll()).thenReturn(Collections.singletonList(menu));
         Mockito.doAnswer(invocation -> {
@@ -52,6 +55,8 @@ public class MenuResourceTest {
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = 4;
 
         given()
             .contentType(ContentType.JSON)
@@ -60,6 +65,61 @@ public class MenuResourceTest {
             .then()
             .statusCode(200)
             .body("id", notNullValue())
-            .body("itemName", is("Test Item"));
+            .body("itemName", is("Test Item"))
+            .body("description", is("Test Description"))
+            .body("rating", is(4));
+    }
+
+    @Test
+    public void testUpdateMenu() {
+        Menu menu = new Menu();
+        menu.rating = 5;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200)
+            .body("rating", is(5));
+    }
+
+    @Test
+    public void testUpdateMenuRatingNull() {
+        Menu menu = new Menu();
+        menu.rating = null;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200);
+    }
+
+    @Test
+    public void testUpdateMenuRatingZero() {
+        Menu menu = new Menu();
+        menu.rating = 0;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200);
+    }
+
+    @Test
+    public void testUpdateMenuRatingOutOfRange() {
+        Menu menu = new Menu();
+        menu.rating = 6;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200);
     }
 }
