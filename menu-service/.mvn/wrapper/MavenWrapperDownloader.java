@@ -22,8 +22,16 @@ import java.io.*;
 import java.nio.channels.*;
 import java.util.Properties;
 
+/**
+ * This class is responsible for downloading the Maven wrapper jar file.
+ * It determines the download URL from the properties file or uses a default,
+ * then downloads the file to the specified location.
+ */
 public class MavenWrapperDownloader
 {
+    /**
+     * The version of the Maven wrapper.
+     */
     private static final String WRAPPER_VERSION = "3.1.0";
 
     /**
@@ -49,6 +57,10 @@ public class MavenWrapperDownloader
      */
     private static final String PROPERTY_NAME_WRAPPER_URL = "wrapperUrl";
 
+    /**
+     * The main entry point of the script.
+     * @param args the command line arguments
+     */
     public static void main( String args[] )
     {
         System.out.println( "- Downloader started" );
@@ -114,9 +126,16 @@ public class MavenWrapperDownloader
         }
     }
 
+    /**
+     * Downloads a file from a given URL and saves it to a destination.
+     * @param urlString the URL to download from
+     * @param destination the file to save to
+     * @throws Exception if an error occurs during download
+     */
     private static void downloadFileFromURL( String urlString, File destination )
         throws Exception
     {
+        // Handle authentication if MVNW_USERNAME and MVNW_PASSWORD environment variables are set
         if ( System.getenv( "MVNW_USERNAME" ) != null && System.getenv( "MVNW_PASSWORD" ) != null )
         {
             String username = System.getenv( "MVNW_USERNAME" );
@@ -134,7 +153,7 @@ public class MavenWrapperDownloader
         ReadableByteChannel rbc;
         rbc = Channels.newChannel( website.openStream() );
         FileOutputStream fos = new FileOutputStream( destination );
-        fos.getChannel().transferFrom( rbc, 0, Long.MAX_VALUE );
+        fos.getChannel().transferFrom( rbc, 0, Long.MAX_VALUE ); // Download the file
         fos.close();
         rbc.close();
     }
