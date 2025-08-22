@@ -19,6 +19,10 @@ import io.quarkus.panache.common.Sort;
 
 import jakarta.inject.Inject;
 
+/**
+ * JAX-RS resource for managing menu items.
+ * Provides endpoints for creating, retrieving, updating, and deleting menu items.
+ */
 @Path("/menu")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -27,6 +31,11 @@ public class MenuResource {
     @Inject
     MenuRepository menuRepository;
 
+    /**
+     * Retrieves all menu items, sorted by item name.
+     * @return a list of all menu items.
+     * @throws Exception if there is an error retrieving the menu items.
+     */
     @GET
     public List<Menu> getAll() throws Exception {
 
@@ -34,30 +43,56 @@ public class MenuResource {
         
     }
 
+    /**
+     * Retrieves a specific menu item by its ID.
+     * @param id the ID of the menu item to retrieve.
+     * @return the menu item with the specified ID.
+     * @throws Exception if there is an error retrieving the menu item.
+     */
     @GET
     @Path("{id}")
     public Menu get(@PathParam("id") Long id) throws Exception {
         return menuRepository.findById(id);
     }
 
+    /**
+     * Retrieves all menu items with the status 'Ready'.
+     * @return a list of ready menu items.
+     * @throws Exception if there is an error retrieving the menu items.
+     */
     @GET
     @Path("/ready")
     public List<Menu> getAllReady() throws Exception {
         return menuRepository.list("status", Status.Ready);
     }
 
+    /**
+     * Retrieves all menu items with the status 'Failed'.
+     * @return a list of failed menu items.
+     * @throws Exception if there is an error retrieving the menu items.
+     */
     @GET
     @Path("/failed")
     public List<Menu> getAllFailed() throws Exception {
         return menuRepository.list("status", Status.Failed);
     }
 
+    /**
+     * Retrieves all menu items with the status 'Processing'.
+     * @return a list of processing menu items.
+     * @throws Exception if there is an error retrieving the menu items.
+     */
     @GET
     @Path("/processing")
     public List<Menu> getAllProcessing() throws Exception {
         return menuRepository.list("status", Status.Processing);
     }
     
+    /**
+     * Creates a new menu item.
+     * @param menu the menu item to create.
+     * @return a response with the created menu item.
+     */
     @POST
     @Transactional
     public Response create(Menu menu) {
@@ -68,6 +103,12 @@ public class MenuResource {
         return Response.ok(menu).status(200).build();
     }
 
+    /**
+     * Updates an existing menu item.
+     * @param id the ID of the menu item to update.
+     * @param menu the menu item with the updated information.
+     * @return the updated menu item.
+     */
     @PUT
     @Transactional
     @Path("{id}")
@@ -89,6 +130,11 @@ public class MenuResource {
         return entity;
     }
 
+    /**
+     * Deletes a menu item by its ID.
+     * @param id the ID of the menu item to delete.
+     * @return a response with the status code.
+     */
     @DELETE
     @Path("{id}")
     @Transactional
