@@ -28,65 +28,79 @@ public class MenuResource {
     MenuRepository menuRepository;
 
     @GET
-    public List<Menu> getAll() throws Exception {
-
+    public List<Menu> getAll() {
         return menuRepository.listAll(Sort.ascending("item_name"));
-        
     }
 
     @GET
     @Path("{id}")
-    public Menu get(@PathParam("id") Long id) throws Exception {
+    public Menu get(@PathParam("id") Long id) {
         return menuRepository.findById(id);
     }
 
     @GET
     @Path("/ready")
-    public List<Menu> getAllReady() throws Exception {
+    public List<Menu> getAllReady() {
         return menuRepository.list("status", Status.Ready);
     }
 
     @GET
     @Path("/failed")
-    public List<Menu> getAllFailed() throws Exception {
+    public List<Menu> getAllFailed() {
         return menuRepository.list("status", Status.Failed);
     }
 
     @GET
     @Path("/processing")
-    public List<Menu> getAllProcessing() throws Exception {
+    public List<Menu> getAllProcessing() {
         return menuRepository.list("status", Status.Processing);
     }
     
     @POST
     @Transactional
     public Response create(Menu menu) {
-        if (menu == null || menu.id != null) 
+        if (menu == null || menu.id != null) {
             throw new WebApplicationException("id != null");
-            menu.status=Status.Processing;
+        }
+        menu.status=Status.Processing;
         menuRepository.persist(menu);
-        return Response.ok(menu).status(200).build();
+        return Response.ok(menu).build();
     }
 
     @PUT
     @Transactional
     @Path("{id}")
     public Menu update(@PathParam("id") Long id, Menu menu) {
-
-        Menu entity = menuRepository.findById(id);
+        var entity = menuRepository.findById(id);
         if (entity == null) {
-            throw new WebApplicationException("Menu item with id"+id+"does not exist", 404);
+            throw new WebApplicationException("Menu item with id " + id + " does not exist", 404);
         }
 
-        if (menu.itemName != null) entity.itemName=menu.itemName;
-        if (menu.itemPrice != null) entity.itemPrice=menu.itemPrice;
-        if (menu.tagLine != null) entity.tagLine=menu.tagLine;
-        entity.spiceLevel=menu.spiceLevel;
-        if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
-        if (menu.itemThumbnailURL != null) entity.itemThumbnailURL = menu.itemThumbnailURL;
-        if (menu.status != null) entity.status = menu.status;
-        if (menu.description != null) entity.description = menu.description;
-        if (menu.rating != null) entity.rating = menu.rating;
+        if (menu.itemName != null) {
+            entity.itemName = menu.itemName;
+        }
+        if (menu.itemPrice != null) {
+            entity.itemPrice = menu.itemPrice;
+        }
+        if (menu.tagLine != null) {
+            entity.tagLine = menu.tagLine;
+        }
+        entity.spiceLevel = menu.spiceLevel;
+        if (menu.itemImageURL != null) {
+            entity.itemImageURL = menu.itemImageURL;
+        }
+        if (menu.itemThumbnailURL != null) {
+            entity.itemThumbnailURL = menu.itemThumbnailURL;
+        }
+        if (menu.status != null) {
+            entity.status = menu.status;
+        }
+        if (menu.description != null) {
+            entity.description = menu.description;
+        }
+        if (menu.rating != null) {
+            entity.rating = menu.rating;
+        }
 
         return entity;
     }
@@ -95,13 +109,11 @@ public class MenuResource {
     @Path("{id}")
     @Transactional
     public Response delete(@PathParam("id") Long id) {
-        Menu entity = menuRepository.findById(id);
+        var entity = menuRepository.findById(id);
         if (entity == null) {
-            throw new WebApplicationException("Menu item with id"+id+"does not exist", 404);
+            throw new WebApplicationException("Menu item with id " + id + " does not exist", 404);
         }
         menuRepository.delete(entity);
         return Response.status(204).build();
     }
-
-
 }

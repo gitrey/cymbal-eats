@@ -14,46 +14,46 @@
     {
       "step": 2,
       "prompt": "Read the file src/main/java/org/google/demo/GreetingResource.java. Refactor the code to use Java 21 features where applicable. For example, look for opportunities to use switch expressions, text blocks, or records if appropriate. Ensure the code is clean, readable, and follows modern Java conventions.",
-      "status": "pending",
+      "status": "complete",
       "git": {
         "hash": "",
         "message": ""
       },
-      "summary": "",
-      "time": ""
+      "summary": "No changes were necessary as the code is simple and does not have opportunities for Java 21 feature refactoring.",
+      "time": "2025-08-28T12:01:00Z"
     },
     {
       "step": 3,
       "prompt": "Read the file src/main/java/org/google/demo/Menu.java. This is a JPA entity. Analyze its structure and fields. Convert this class into a Java 21 Record if possible, while maintaining its JPA entity characteristics. If it cannot be a record, update the class to use modern Java 21 syntax, like using `var` for local variables in methods if any are added.",
-      "status": "pending",
+      "status": "complete",
       "git": {
         "hash": "",
         "message": ""
       },
-      "summary": "",
-      "time": ""
+      "summary": "The Menu.java file is a Panache entity and cannot be converted to a record. No other Java 21 features were applicable.",
+      "time": "2025-08-28T12:02:00Z"
     },
     {
       "step": 4,
       "prompt": "Read the file src/main/java/org/google/demo/MenuRepository.java. This is a Panache repository. Review the interface. While this file might not have much code to change, ensure it's compatible with the updated Menu entity and the newer Quarkus version. Add any necessary imports or annotations if the framework conventions have changed.",
-      "status": "pending",
+      "status": "complete",
       "git": {
         "hash": "",
         "message": ""
       },
-      "summary": "",
-      "time": ""
+      "summary": "No changes were necessary. The file is a standard Panache repository and is compatible with the new Quarkus version.",
+      "time": "2025-08-28T12:03:00Z"
     },
     {
       "step": 5,
       "prompt": "Read the file src/main/java/org/google/demo/MenuResource.java. This is a JAX-RS resource. Refactor the code to use Java 21 features. Look for opportunities to use switch expressions, pattern matching for instanceof, and `var` for local variables. Simplify the stream operations if possible and ensure all JAX-RS annotations are up-to-date with the new Quarkus version.",
-      "status": "pending",
+      "status": "complete",
       "git": {
         "hash": "",
         "message": ""
       },
-      "summary": "",
-      "time": ""
+      "summary": "Refactored MenuResource.java to use `var` for local variables, improved code style with curly braces, and removed unnecessary `throws Exception` clauses.",
+      "time": "2025-08-28T12:04:00Z"
     },
     {
       "step": 6,
