@@ -1,0 +1,114 @@
+{
+  "steps": [
+    {
+      "step": 1,
+      "prompt": "Analyze the pom.xml file. Identify the Quarkus version and update it to the latest stable version compatible with Java 21. Update the java.version property to '21'. Update all other dependencies (like quarkus-resteasy, quarkus-hibernate-orm-panache, etc.) to their latest compatible versions. Remove any deprecated dependencies. Ensure the maven-compiler-plugin is configured for Java 21.",
+      "status": "complete",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "Updated pom.xml to use Java 21 and Quarkus 3.26. Updated maven-compiler-plugin to 3.13.0 and surefire-plugin to 3.2.5. Removed outdated properties.",
+      "time": "2025-08-28T12:00:00Z"
+    },
+    {
+      "step": 2,
+      "prompt": "Read the file src/main/java/org/google/demo/GreetingResource.java. Refactor the code to use Java 21 features where applicable. For example, look for opportunities to use switch expressions, text blocks, or records if appropriate. Ensure the code is clean, readable, and follows modern Java conventions.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    },
+    {
+      "step": 3,
+      "prompt": "Read the file src/main/java/org/google/demo/Menu.java. This is a JPA entity. Analyze its structure and fields. Convert this class into a Java 21 Record if possible, while maintaining its JPA entity characteristics. If it cannot be a record, update the class to use modern Java 21 syntax, like using `var` for local variables in methods if any are added.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    },
+    {
+      "step": 4,
+      "prompt": "Read the file src/main/java/org/google/demo/MenuRepository.java. This is a Panache repository. Review the interface. While this file might not have much code to change, ensure it's compatible with the updated Menu entity and the newer Quarkus version. Add any necessary imports or annotations if the framework conventions have changed.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    },
+    {
+      "step": 5,
+      "prompt": "Read the file src/main/java/org/google/demo/MenuResource.java. This is a JAX-RS resource. Refactor the code to use Java 21 features. Look for opportunities to use switch expressions, pattern matching for instanceof, and `var` for local variables. Simplify the stream operations if possible and ensure all JAX-RS annotations are up-to-date with the new Quarkus version.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    },
+    {
+      "step": 6,
+      "prompt": "Read the file src/main/java/org/google/demo/Status.java. This is a simple enum. While there might not be much to change, review it to see if any new Java 21 features for enums could be applied, although it's unlikely. The main purpose is to ensure it compiles and works with the new Java version.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    },
+    {
+      "step": 7,
+      "prompt": "Read the file src/test/java/org/google/demo/GreetingResourceTest.java. This is a Quarkus test. Update the test to use modern Java 21 syntax. Use `var` for local variables where appropriate. Ensure the test annotations are correct for the new version of Quarkus. Verify that the test logic is still valid and covers the intended functionality.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    },
+    {
+      "step": 8,
+      "prompt": "Read the file src/test/java/org/google/demo/MenuResourceTest.java. This is a Quarkus test for the Menu API. Update the test to use modern Java 21 syntax, such as `var` for local variables. Check for any deprecated test annotations or methods from the old Quarkus version and update them. Ensure the test remains robust and correctly validates the MenuResource endpoints.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    },
+    {
+      "step": 9,
+      "prompt": "Review the Dockerfiles: Dockerfile, src/main/docker/Dockerfile.jvm, src/main/docker/Dockerfile.legacy-jar, src/main/docker/Dockerfile.native, and src/main/docker/Dockerfile.native-micro. Update the base images to a version that supports Java 21. For example, change the base image to a Java 21 compatible image like 'ubi-minimal' with a Java 21 JDK.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    },
+    {
+      "step": 10,
+      "prompt": "After all code and configuration files have been updated, run a full Maven build and execute the tests to verify the upgrade. The command should be './mvnw clean verify'. This will compile the code, run all tests, and package the application, ensuring that the upgrade to Java 21 and the new dependencies is successful and the application is stable.",
+      "status": "pending",
+      "git": {
+        "hash": "",
+        "message": ""
+      },
+      "summary": "",
+      "time": ""
+    }
+  ]
+}
