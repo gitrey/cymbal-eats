@@ -13,7 +13,7 @@
             v-model="displayOnlyReadyItems"
           >
             <span style="font-size:150%">
-              Display only Ready items
+              Ready only items
             </span>
           </q-checkbox>
         </div>
@@ -21,7 +21,7 @@
           <q-btn
             size="lg"
             color="primary"
-            label="Create a new menu item"
+            label="New menu item"
             @click="goToCreateMenuItemPage"
           />
         </div>
@@ -48,7 +48,10 @@
                 Price: ${{ dish.itemPrice.toFixed(2) }}
               </div>
               <div>
-                Spice level: {{ dish.spiceLevel }}
+                Rating: 5
+              </div>
+              <div>
+                Description: item description
               </div>
               <div>
                 Inventory: {{ dish.inventory }}
@@ -58,7 +61,7 @@
               <div class="text-subtitle2">
                 <q-btn
                   color="primary"
-                  label="Adjust inventory"
+                  label="Update inventory"
                   @click="editInventory(dish.id, dish.name, dish.inventory)"
                 />
               </div>
