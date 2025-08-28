@@ -1,7 +1,7 @@
 package org.google.demo;
 
+import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,11 +18,10 @@ import static org.mockito.ArgumentMatchers.any;
 @QuarkusTest
 public class MenuResourceTest {
 
-    @InjectMock
-    MenuRepository menuRepository;
-
     @BeforeEach
     public void setup() {
+        MenuRepository menuRepository = Mockito.mock(MenuRepository.class);
+        QuarkusMock.installMockForType(menuRepository, MenuRepository.class);
         var menu = new Menu();
         menu.id = 1L;
         menu.itemName = "Test Item";
