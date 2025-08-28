@@ -24,7 +24,7 @@
     },
     {
       "step": 3,
-      "prompt": "Read the file src/main/java/org/google/demo/Menu.java. This is a JPA entity. Analyze its structure and fields. Convert this class into a Java 21 Record if possible, while maintaining its JPA entity characteristics. If it cannot be a record, update the class to use modern Java 21 syntax, like using `var` for local variables in methods if any are added.",
+      "prompt": "Read the file src/main/java/org/google/demo/Menu.java. This is a JPA entity. Analyze its structure and fields. Convert this class into a Java 21 Record if possible, while maintaining its JPA entity characteristics. If itcannot be a record, update the class to use modern Java 21 syntax, like using `var` for local variables in methods if any are added.",
       "status": "complete",
       "git": {
         "hash": "",
@@ -58,35 +58,35 @@
     {
       "step": 6,
       "prompt": "Read the file src/main/java/org/google/demo/Status.java. This is a simple enum. While there might not be much to change, review it to see if any new Java 21 features for enums could be applied, although it's unlikely. The main purpose is to ensure it compiles and works with the new Java version.",
-      "status": "pending",
+      "status": "complete",
       "git": {
         "hash": "",
         "message": ""
       },
-      "summary": "",
-      "time": ""
+      "summary": "No changes were necessary. The enum is simple and compatible with Java 21.",
+      "time": "2025-08-28T12:05:00Z"
     },
     {
       "step": 7,
       "prompt": "Read the file src/test/java/org/google/demo/GreetingResourceTest.java. This is a Quarkus test. Update the test to use modern Java 21 syntax. Use `var` for local variables where appropriate. Ensure the test annotations are correct for the new version of Quarkus. Verify that the test logic is still valid and covers the intended functionality.",
-      "status": "pending",
+      "status": "complete",
       "git": {
         "hash": "",
         "message": ""
       },
-      "summary": "",
-      "time": ""
+      "summary": "No changes were necessary. The test is simple and does not have opportunities for Java 21 feature refactoring.",
+      "time": "2025-08-28T12:06:00Z"
     },
     {
       "step": 8,
       "prompt": "Read the file src/test/java/org/google/demo/MenuResourceTest.java. This is a Quarkus test for the Menu API. Update the test to use modern Java 21 syntax, such as `var` for local variables. Check for any deprecated test annotations or methods from the old Quarkus version and update them. Ensure the test remains robust and correctly validates the MenuResource endpoints.",
-      "status": "pending",
+      "status": "complete",
       "git": {
         "hash": "",
         "message": ""
       },
-      "summary": "",
-      "time": ""
+      "summary": "Refactored MenuResourceTest.java to use `var` for local variables and simplified code.",
+      "time": "2025-08-28T12:07:00Z"
     },
     {
       "step": 9,

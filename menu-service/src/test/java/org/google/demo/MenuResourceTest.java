@@ -23,7 +23,7 @@ public class MenuResourceTest {
 
     @BeforeEach
     public void setup() {
-        Menu menu = new Menu();
+        var menu = new Menu();
         menu.id = 1L;
         menu.itemName = "Test Item";
         menu.itemPrice = BigDecimal.valueOf(10.0);
@@ -38,7 +38,7 @@ public class MenuResourceTest {
         Mockito.when(menuRepository.findById(1L)).thenReturn(menu);
         Mockito.when(menuRepository.listAll()).thenReturn(Collections.singletonList(menu));
         Mockito.doAnswer(invocation -> {
-            Menu m = invocation.getArgument(0);
+            var m = invocation.getArgument(0, Menu.class);
             m.id = 1L;
             return null;
         }).when(menuRepository).persist(any(Menu.class));
@@ -46,9 +46,9 @@ public class MenuResourceTest {
 
     @Test
     public void testCreateMenu() {
-        Menu menu = new Menu();
+        var menu = new Menu();
         menu.itemName = "Test Item";
-        menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
+        menu.itemPrice = BigDecimal.valueOf(10.0);
         menu.spiceLevel = 1;
         menu.tagLine = "Test Tagline";
         menu.itemImageURL = null; // Set to null or a valid URL
