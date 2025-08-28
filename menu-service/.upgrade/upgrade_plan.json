@@ -91,13 +91,13 @@
     {
       "step": 9,
       "prompt": "Review the Dockerfiles: Dockerfile, src/main/docker/Dockerfile.jvm, src/main/docker/Dockerfile.legacy-jar, src/main/docker/Dockerfile.native, and src/main/docker/Dockerfile.native-micro. Update the base images to a version that supports Java 21. For example, change the base image to a Java 21 compatible image like 'ubi-minimal' with a Java 21 JDK.",
-      "status": "pending",
+      "status": "complete",
       "git": {
         "hash": "",
         "message": ""
       },
-      "summary": "",
-      "time": ""
+      "summary": "Updated Dockerfiles to use Java 21 compatible base images. Used ubi8/openjdk-21 for JVM images, ubi9/ubi-minimal for the native image, and ubi9-quarkus-micro-image:2.0 for the native-micro image.",
+      "time": "2025-08-28T12:08:00Z"
     },
     {
       "step": 10,
