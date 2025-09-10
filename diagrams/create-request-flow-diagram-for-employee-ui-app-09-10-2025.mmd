@@ -1,0 +1,43 @@
+graph TD
+    subgraph User
+        A[Employee]
+    end
+
+    subgraph Frontend
+        B[Employee UI - Quasar App]
+    end
+
+    subgraph Security
+        C[Google Cloud IAP]
+    end
+
+    subgraph Backend
+        D[API Gateway]
+        E[Menu Service]
+        F[Inventory Service]
+        G[Order Service]
+    end
+
+    subgraph Data Stores
+        H[Menu DB]
+        I[Inventory DB]
+        J[Orders DB]
+    end
+
+    A -- Interacts with --> B
+    B -- Request --> C
+    C -- Authenticates/Authorizes --> D
+    D -- Routes request --> E
+    D -- Routes request --> F
+    D -- Routes request --> G
+    E -- Reads/Writes --> H
+    F -- Reads/Writes --> I
+    G -- Reads/Writes --> J
+    J -- Returns data --> G
+    I -- Returns data --> F
+    H -- Returns data --> E
+    G -- Returns response --> D
+    F -- Returns response --> D
+    E -- Returns response --> D
+    D -- Returns API response --> B
+    B -- Renders UI update --> A

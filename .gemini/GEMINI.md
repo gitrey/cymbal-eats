@@ -1,1 +1,1 @@
-JIRA/Confluence instance is genai4dev.atlassian.net 
+Cymbal Eats Project - JIRA/Confluence instance is genai4dev.atlassian.net 

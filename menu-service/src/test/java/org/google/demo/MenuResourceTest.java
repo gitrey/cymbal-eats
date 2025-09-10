@@ -80,4 +80,20 @@ public class MenuResourceTest {
             .body("description", is("Test Description"))
             .body("rating", is(5));
     }
+
+    @Test
+    public void testUpdateMenu() {
+        Menu updatedMenu = new Menu();
+        updatedMenu.description = "New Description";
+        updatedMenu.rating = 5;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(updatedMenu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200)
+            .body("description", is("New Description"))
+            .body("rating", is(5));
+    }
 }
