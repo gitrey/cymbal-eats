@@ -13,7 +13,7 @@
             v-model="displayOnlyReadyItems"
           >
             <span style="font-size:150%">
-              Display only Ready items
+              Ready only items
             </span>
           </q-checkbox>
         </div>
@@ -21,7 +21,7 @@
           <q-btn
             size="lg"
             color="primary"
-            label="Create a new menu item"
+            label="NEW MENU ITEM"
             @click="goToCreateMenuItemPage"
           />
         </div>
@@ -53,12 +53,18 @@
               <div>
                 Inventory: {{ dish.inventory }}
               </div>
+              <div>
+                Rating: {{ dish.rating }}
+              </div>
+              <div>
+                Description: {{ dish.description }}
+              </div>
             </q-card-section>
             <q-card-section>
               <div class="text-subtitle2">
                 <q-btn
                   color="primary"
-                  label="Adjust inventory"
+                  label="UPDATE INVENTORY"
                   @click="editInventory(dish.id, dish.name, dish.inventory)"
                 />
               </div>
