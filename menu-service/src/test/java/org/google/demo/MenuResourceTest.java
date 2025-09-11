@@ -32,6 +32,8 @@ public class MenuResourceTest {
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = 4;
 
         Mockito.when(menuRepository.findById(1L)).thenReturn(menu);
         Mockito.when(menuRepository.listAll()).thenReturn(Collections.singletonList(menu));
@@ -52,6 +54,8 @@ public class MenuResourceTest {
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = 4;
 
         given()
             .contentType(ContentType.JSON)
@@ -60,6 +64,26 @@ public class MenuResourceTest {
             .then()
             .statusCode(200)
             .body("id", notNullValue())
-            .body("itemName", is("Test Item"));
+            .body("itemName", is("Test Item"))
+            .body("description", is("Test Description"))
+            .body("rating", is(4));
+    }
+
+    @Test
+    public void testUpdateMenu() {
+        Menu menu = new Menu();
+        menu.itemName = "Updated Item";
+        menu.description = "Updated Description";
+        menu.rating = 5;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().put("/menu/1")
+            .then()
+            .statusCode(200)
+            .body("itemName", is("Updated Item"))
+            .body("description", is("Updated Description"))
+            .body("rating", is(5));
     }
 }

@@ -37,6 +37,12 @@ public class Menu extends PanacheEntity {
     @Column(name="item_status")
     public Status status;
 
+    @Column(name="description")
+    public String description;
+
+    @Column(name="rating")
+    public int rating;
+
     @CreationTimestamp
     @Column(name="creation_timestamp")
     public LocalDateTime createDateTime;
