@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+app.disable('x-powered-by');
 const axios = require('axios');
 app.use(cors());
 app.use(express.json());
@@ -130,6 +131,9 @@ async function createOrderRecord(requestBody) {
 }
 
 async function subtractFromInventory(orderItems) {
+  if (!Array.isArray(orderItems)) {
+    throw new Error('orderItems must be an array.');
+  }
   await inventoryServer.post("/updateInventoryItem", 
     orderItems.map(x => ({
       itemID: x.id,
