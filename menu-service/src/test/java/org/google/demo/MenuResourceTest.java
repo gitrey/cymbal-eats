@@ -1,7 +1,7 @@
 package org.google.demo;
 
+import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,11 @@ import static org.mockito.ArgumentMatchers.any;
 @QuarkusTest
 public class MenuResourceTest {
 
-    @InjectMock
-    MenuRepository menuRepository;
-
     @BeforeEach
     public void setup() {
-        Menu menu = new Menu();
+        MenuRepository menuRepository = Mockito.mock(MenuRepository.class);
+        QuarkusMock.installMockForType(menuRepository, MenuRepository.class);
+        var menu = new Menu();
         menu.id = 1L;
         menu.itemName = "Test Item";
         menu.itemPrice = BigDecimal.valueOf(10.0);
@@ -32,11 +31,13 @@ public class MenuResourceTest {
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = 4.5;
 
         Mockito.when(menuRepository.findById(1L)).thenReturn(menu);
         Mockito.when(menuRepository.listAll()).thenReturn(Collections.singletonList(menu));
         Mockito.doAnswer(invocation -> {
-            Menu m = invocation.getArgument(0);
+            var m = invocation.getArgument(0, Menu.class);
             m.id = 1L;
             return null;
         }).when(menuRepository).persist(any(Menu.class));
@@ -44,14 +45,16 @@ public class MenuResourceTest {
 
     @Test
     public void testCreateMenu() {
-        Menu menu = new Menu();
+        var menu = new Menu();
         menu.itemName = "Test Item";
-        menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
+        menu.itemPrice = BigDecimal.valueOf(10.0);
         menu.spiceLevel = 1;
         menu.tagLine = "Test Tagline";
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = 4.5;
 
         given()
             .contentType(ContentType.JSON)
@@ -60,7 +63,9 @@ public class MenuResourceTest {
             .then()
             .statusCode(200)
             .body("id", notNullValue())
-            .body("itemName", is("Test Item"));
+            .body("itemName", is("Test Item"))
+            .body("description", is("Test Description"))
+            .body("rating", is(4.5f));
     }
 
 }
