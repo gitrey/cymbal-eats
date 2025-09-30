@@ -1,472 +1,182 @@
-# Deploying menu-service 
+# Menu Service
 
-## Deploy CloudSQL
+## Overview
 
-Enable service APIs
+The Menu Service is a RESTful web service for managing a restaurant's menu. It provides endpoints to perform CRUD (Create, Read, Update, Delete) operations on menu items. The service is built using Java with the Quarkus framework.
 
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+- Java 11 or later
+- Maven 3.8.1 or later
+- Docker (for building container images)
+
+## Local Development
+
+### Running the Application
+
+You can run the application in development mode, which enables live coding.
+1.  Navigate to the `menu-service` directory.
+2.  Run the following command:
+
+    ```bash
+    ./mvnw quarkus:dev
+    ```
+The application will be available at `http://localhost:8080`.
+
+### Running Tests
+
+To run the unit and integration tests, use the following command:
+
+```bash
+./mvnw test
 ```
+
+## API Endpoints
+
+The service exposes the following REST endpoints under the `/menu` path.
+
+| Method   | Path                  | Description                               |
+|----------|-----------------------|-------------------------------------------|
+| `GET`    | `/`                   | Get all menu items, sorted by name.       |
+| `GET`    | `/{id}`               | Get a specific menu item by its ID.       |
+| `GET`    | `/ready`              | Get all menu items with "Ready" status.   |
+| `GET`    | `/failed`             | Get all menu items with "Failed" status.  |
+| `GET`    | `/processing`         | Get all menu items with "Processing" status.|
+| `POST`   | `/`                   | Create a new menu item.                   |
+| `PUT`    | `/{id}`               | Update an existing menu item.             |
+| `DELETE` | `/{id}`               | Delete a menu item by its ID.             |
+
+### Example Usage (with `httpie`)
+
+*   **Get all items:** `http GET :8080/menu`
+*   **Create an item:** `http POST :8080/menu itemName=Pizza itemPrice=15.99`
+*   **Update an item:** `http PUT :8080/menu/1 status=Ready`
+*   **Delete an item:** `http DELETE :8080/menu/1`
+
+## Building for Production
+
+You can build the application as either a standard JVM-based package or a native executable.
+
+### JVM Build
+
+1.  **Package the application:**
+    ```bash
+    ./mvnw package -DskipTests
+    ```
+2.  **Build the Docker image:**
+    ```bash
+    docker build -f src/main/docker/Dockerfile.jvm -t gcr.io/YOUR_PROJECT_ID/menu-service .
+    ```
+
+### Native Build (GraalVM)
+
+1.  **Package the application as a native executable:**
+    ```bash
+    ./mvnw package -Pnative -DskipTests
+    ```
+2.  **Build the native Docker image:**
+    ```bash
+    docker build -f src/main/docker/Dockerfile.native -t gcr.io/YOUR_PROJECT_ID/menu-service .
+    ```
+
+## Deployment on Google Cloud
+
+This guide assumes you are deploying the service to Google Cloud Run with a Cloud SQL for PostgreSQL backend.
+
+### 1. Set Up Environment Variables
+
+First, set up the necessary environment variables in your shell.
+
+```bash
+export PROJECT_ID=$(gcloud config get-value project)
+export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+export REGION="us-central1" # Change to your preferred region
+```
+
+### 2. Configure Cloud SQL
+
+#### a. Enable APIs
+```bash
 gcloud services enable sqladmin.googleapis.com
 ```
 
-Create a new CloudSQL instance of type Postgres with name `menu-catalog` and a Private IP using the steps explained [here](https://cloud.google.com/sql/docs/postgres/quickstart-private-ip#create-instance). This step will take several minutes.
+#### b. Create a Cloud SQL Instance
+Create a PostgreSQL instance with a private IP. This may take several minutes.
 
-Copy the Private IP to connect to the database.
-```
-DB_HOST=[VALUE OF PRIVATEIP]
-```
-
-Create a database with name `menu-db` in this `menu-catalog` CloudSQL instance running
-
-```
-DB_DATABASE=menu-db
+```bash
 DB_INSTANCE_NAME=menu-catalog
+gcloud sql instances create $DB_INSTANCE_NAME --database-version=POSTGRES_13 --region=$REGION --network=default
+```
 
+Once created, get the private IP address.
+```bash
+export DB_HOST=$(gcloud sql instances describe $DB_INSTANCE_NAME --format='value(ipAddresses.ipAddress)')
+```
+
+#### c. Create a Database
+```bash
+DB_DATABASE=menu-db
 gcloud sql databases create $DB_DATABASE --instance=$DB_INSTANCE_NAME
 ```
 
-Add a database user
-
-```
-DB_USER=[CHANGEME]
-DB_PASSWORD=[CHANGEME]
-gcloud sql users create $DB_USER \
---instance=$DB_INSTANCE_NAME \
---password=$DB_PASSWORD
+#### d. Create a Database User
+Replace `[CHANGEME]` with a secure password.
+```bash
+export DB_USER="menu-user"
+export DB_PASSWORD="[CHANGEME]"
+gcloud sql users create $DB_USER --instance=$DB_INSTANCE_NAME --password=$DB_PASSWORD
 ```
 
-## Configure access to CloudSQL
+### 3. Configure Service Access
 
-Assign `cloudsql.client` role to the service account that runs Cloud Run
+#### a. Grant Cloud SQL Client Role
+Allow the Cloud Run service account to connect to the Cloud SQL instance.
 
-```
-PROJECT_NAME=$(gcloud config get-value project)
-
-PROJECT_NUMBER=`eval echo $(gcloud projects describe $PROJECT_NAME | grep projectNumber | awk '{print $2}'  -)`
-
-gcloud projects add-iam-policy-binding $PROJECT_NAME \
---member="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
---role="roles/cloudsql.client"
+```bash
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
+    --role="roles/cloudsql.client"
 ```
 
-## Setup Serverless VPC Connector
+#### b. Set Up Serverless VPC Connector
+Create a Serverless VPC Connector to allow Cloud Run to access the private IP of the Cloud SQL instance.
 
-Create a serverless VPC Connector as explained [here](https://cloud.google.com/vpc/docs/configure-serverless-vpc-access#create-connector)
+```bash
+gcloud services enable vpcaccess.googleapis.com
 
-Note the name of the serverless VPC connector
-
-```
-SERVERLESS_VPC_CONNECTOR=cymbalconnector
-```
-
-## Deploy Menu Service on Cloud Run
-
-Clone this repository and change to `menu-service` directory
-
-```
-cd menu-service
+SERVERLESS_VPC_CONNECTOR=cymbal-connector
+gcloud compute networks vpc-access connectors create $SERVERLESS_VPC_CONNECTOR \
+    --region=$REGION \
+    --range=10.8.0.0/28
 ```
 
-### To build JVM based image
-* Compile the application using maven
-```
-./mvnw package -DskipTests
-```
-* Build container image
-```
-docker build -f src/main/docker/Dockerfile.jvm --tag gcr.io/$PROJECT_NAME/menu-service .
+### 4. Build and Push the Docker Image
+
+Build the container image (choose either JVM or native from the "Building for Production" section) and push it to Google Container Registry (GCR).
+
+```bash
+# Example for JVM build
+docker build -f src/main/docker/Dockerfile.jvm -t gcr.io/$PROJECT_ID/menu-service .
+docker push gcr.io/$PROJECT_ID/menu-service
 ```
 
-### To build native image
-* Install GraalVM
-* Package the application natively
-```
-./mvnw package -Pnative -DskipTests
-```
-* Build native container image
-```
-docker build -f src/main/docker/Dockerfile.native --tag gcr.io/$PROJECT_NAME/menu-service .
-```
-* The image size should be pretty small
-```
-$ docker images
-REPOSITORY                                                        TAG             IMAGE ID       CREATED              SIZE
-gcr.io/PROJECT_NAME/menu-service                                   latest          b6f5cdd4caf1   About a minute ago   162MB
-```
+### 5. Deploy to Cloud Run
 
-Push the image to the remote registry
-```
-docker push gcr.io/$PROJECT_NAME/menu-service
-```
+Enable the Cloud Run API and deploy the service.
 
-Enable Run APIs
-
-```
+```bash
 gcloud services enable run.googleapis.com
-```
 
-Build and deploy Cloud Run service
-
-```
 gcloud run deploy menu-service \
---image=gcr.io/$PROJECT_NAME/menu-service:latest \
---set-env-vars DB_USER=$DB_USER \
---set-env-vars DB_PASS=$DB_PASSWORD \
---set-env-vars DB_DATABASE=$DB_DATABASE \
---set-env-vars DB_HOST=$DB_HOST \
---vpc-connector $SERVERLESS_VPC_CONNECTOR
+    --image=gcr.io/$PROJECT_ID/menu-service:latest \
+    --region=$REGION \
+    --allow-unauthenticated \
+    --set-env-vars DB_USER=$DB_USER \
+    --set-env-vars DB_PASS=$DB_PASSWORD \
+    --set-env-vars DB_DATABASE=$DB_DATABASE \
+    --set-env-vars DB_HOST=$DB_HOST \
+    --vpc-connector $SERVERLESS_VPC_CONNECTOR
 ```
 
-Note the URL for the service
-
-```
-URL=SERVICE URL
-```
-
-## Test the Service
-
-You'll need a tool like httpie.
-
-### Test GET
-```
-http GET $URL/menu
-```
-
-Result
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-content-length: 1177
-
-[
-    {
-        "id": 1,
-        "itemImageURL": "https://sheikahplate.files.wordpress.com/2018/03/vegetable_curry_header.jpg?w=720",
-        "itemName": "Curry Plate",
-        "itemPrice": 12.5,
-        "itemThumbnailURL": "https://sheikahplate.files.wordpress.com/2018/03/vegetable_curry_header.jpg?w=720",
-        "spiceLevel": 3,
-        "status": "Ready",
-        "tagLine": "Spicy touch for your taste buds!!"
-    },
-    {
-        "id": 3,
-        "itemImageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg/1200px-Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg",
-        "itemName": "Gulab Jamoon",
-        "itemPrice": 2.4,
-        "itemThumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg/1200px-Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg",
-        "spiceLevel": 0,
-        "status": "Failed",
-        "tagLine": "Sweet cottage cheese dumplings"
-    },
-    {
-        "id": 2,
-        "itemImageURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-        "itemName": "Idly Plate",
-        "itemPrice": 10.25,
-        "itemThumbnailURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-        "spiceLevel": 2,
-        "status": "Ready",
-        "tagLine": "South Indian delight!!"
-    }
-]
-```
-### Test GET Ready 
-
-```
-http GET $URL/menu/ready
-```
-
-Outputs only items that are ready
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-content-length: 685
-
-[
-    {
-        "id": 1,
-        "itemImageURL": "https://sheikahplate.files.wordpress.com/2018/03/vegetable_curry_header.jpg?w=720",
-        "itemName": "Curry Plate",
-        "itemPrice": 12.5,
-        "itemThumbnailURL": "https://sheikahplate.files.wordpress.com/2018/03/vegetable_curry_header.jpg?w=720",
-        "spiceLevel": 3,
-        "status": "Ready",
-        "tagLine": "Spicy touch for your taste buds!!"
-    },
-    {
-        "id": 2,
-        "itemImageURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-        "itemName": "Idly Plate",
-        "itemPrice": 10.25,
-        "itemThumbnailURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-        "spiceLevel": 2,
-        "status": "Ready",
-        "tagLine": "South Indian delight!!"
-    }
-]
-```
-
-### Test GET Failed
-
-```
-http GET $URL/menu/failed
-```
-
-Outputs only failed menu items
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-content-length: 493
-
-[
-    {
-        "id": 3,
-        "itemImageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg/1200px-Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg",
-        "itemName": "Gulab Jamoon",
-        "itemPrice": 2.4,
-        "itemThumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg/1200px-Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg",
-        "spiceLevel": 0,
-        "status": "Failed",
-        "tagLine": "Sweet cottage cheese dumplings"
-    }
-]
-```
-
-### Test GET by Id
-
-```
-http GET $URL/menu/2
-```
-
-Output
-
-```
-HTTP/1.1 200 OK
-Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
-Content-Length: 351
-Date: Mon, 14 Mar 2022 21:18:04 GMT
-Server: Google Frontend
-X-Cloud-Trace-Context: 58a648b21ecefc78c5cff41fc8dace65;o=1
-content-type: application/json
-
-{
-    "id": 2,
-    "itemImageURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-    "itemName": "Idly Plate",
-    "itemPrice": 10.25,
-    "itemThumbnailURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-    "spiceLevel": 2,
-    "status": "Ready",
-    "tagLine": "South Indian delight!!"
-}
-
-```
-
-
-### Test POST
-
-Note the POST request doesnt include status field.
-```
-http POST $URL/menu itemName=Rasgulla itemPrice=3.2 tagLine="East Indian Cottage Cheese dumplings" itemImageURL="https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg" itemThumbnailURL="https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg"
-```
-
-Output as below. Note the status is automatically set to `Processing`
-
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-content-length: 316
-
-{
-    "id": 4,
-    "itemImageURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-    "itemName": "Rasgulla",
-    "itemPrice": 3.2,
-    "itemThumbnailURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-    "spiceLevel": 0,
-    "status": "Processing",
-    "tagLine": "East Indian Cottage Cheese dumplings"
-}
-
-```
-
-Check with GET again to see the data
-
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-content-length: 1495
-
-[
-    {
-        "id": 1,
-        "itemImageURL": "https://sheikahplate.files.wordpress.com/2018/03/vegetable_curry_header.jpg?w=720",
-        "itemName": "Curry Plate",
-        "itemPrice": 12.5,
-        "itemThumbnailURL": "https://sheikahplate.files.wordpress.com/2018/03/vegetable_curry_header.jpg?w=720",
-        "spiceLevel": 3,
-        "status": "Ready",
-        "tagLine": "Spicy touch for your taste buds!!"
-    },
-    {
-        "id": 3,
-        "itemImageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg/1200px-Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg",
-        "itemName": "Gulab Jamoon",
-        "itemPrice": 2.4,
-        "itemThumbnailURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg/1200px-Gulab_jamun_%28Gibraltar%2C_November_2020%29.jpg",
-        "spiceLevel": 0,
-        "status": "Failed",
-        "tagLine": "Sweet cottage cheese dumplings"
-    },
-    {
-        "id": 2,
-        "itemImageURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-        "itemName": "Idly Plate",
-        "itemPrice": 10.25,
-        "itemThumbnailURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-        "spiceLevel": 2,
-        "status": "Ready",
-        "tagLine": "South Indian delight!!"
-    },
-    {
-        "id": 4,
-        "itemImageURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-        "itemName": "Rasgulla",
-        "itemPrice": 3.2,
-        "itemThumbnailURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-        "spiceLevel": 0,
-        "status": "Processing",
-        "tagLine": "East Indian Cottage Cheese dumplings"
-    }
-]
-
-```
-
-Test GET with `processing`
-
-```
-http GET $URL/menu/processing
-```
-
-Output
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-content-length: 319
-
-[
-    {
-        "id": 4,
-        "itemImageURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-        "itemName": "Rasgulla",
-        "itemPrice": 3.2,
-        "itemThumbnailURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-        "spiceLevel": 0,
-        "status": "Processing",
-        "tagLine": "East Indian Cottage Cheese dumplings"
-    }
-]
-
-```
-
-### Test PUT
-
-```
-http PUT $URL/menu/4 itemName=Roshogulla itemPrice=3.2 tagLine="East Indian Cottage Cheese dumplings" itemImageURL="https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg" itemThumbnailURL="https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg" status="Ready"
-```
-Output
-
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-content-length: 313
-
-{
-    "id": 4,
-    "itemImageURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-    "itemName": "Roshogulla",
-    "itemPrice": 3.2,
-    "itemThumbnailURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-    "spiceLevel": 0,
-    "status": "Ready",
-    "tagLine": "East Indian Cottage Cheese dumplings"
-}
-```
-Test with GET ready items again
-
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-content-length: 1000
-
-[
-    {
-        "id": 1,
-        "itemImageURL": "https://sheikahplate.files.wordpress.com/2018/03/vegetable_curry_header.jpg?w=720",
-        "itemName": "Curry Plate",
-        "itemPrice": 12.5,
-        "itemThumbnailURL": "https://sheikahplate.files.wordpress.com/2018/03/vegetable_curry_header.jpg?w=720",
-        "spiceLevel": 3,
-        "status": "Ready",
-        "tagLine": "Spicy touch for your taste buds!!"
-    },
-    {
-        "id": 2,
-        "itemImageURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-        "itemName": "Idly Plate",
-        "itemPrice": 10.25,
-        "itemThumbnailURL": "http://nie-images.s3.amazonaws.com/gall_content/2020/10/2020_10$largeimg11_Oct_2020_200729347.jpg",
-        "spiceLevel": 2,
-        "status": "Ready",
-        "tagLine": "South Indian delight!!"
-    },
-    {
-        "id": 4,
-        "itemImageURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-        "itemName": "Roshogulla",
-        "itemPrice": 3.2,
-        "itemThumbnailURL": "https://rakskitchen.net/wp-content/uploads/2010/10/homemade-rasgulla.jpg",
-        "spiceLevel": 0,
-        "status": "Ready",
-        "tagLine": "East Indian Cottage Cheese dumplings"
-    }
-]
-
-```
-
-### Test DELETE
-
-```
-http DELETE $URL/menu/4
-```
-
-Output
-```
-HTTP/1.1 204 No Content
-Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
-Content-Length: 0
-Content-Type: text/html
-Date: Tue, 15 Feb 2022 19:07:56 GMT
-Server: Google Frontend
-X-Cloud-Trace-Context: 4bb1d40d73dbc39464e4f6b8ab32b290;o=1
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+After deployment, Cloud Run will provide a service URL. You can use this URL to test the deployed service using the API endpoints described above.
