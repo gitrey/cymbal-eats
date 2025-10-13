@@ -8,6 +8,9 @@ import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -21,6 +24,14 @@ public class Menu extends PanacheEntity {
     
     @Column(name="item_price")
     public BigDecimal itemPrice;
+
+    @Column(name="description")
+    public String description;
+
+    @Min(1)
+    @Max(5)
+    @Column(name="rating")
+    public int rating;
 
     @Column(name="default_spice_level", columnDefinition =  "integer default 0")
     public int spiceLevel;
