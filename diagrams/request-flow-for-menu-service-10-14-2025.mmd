@@ -1,0 +1,22 @@
+```mermaid
+graph TD
+    subgraph "User's Environment"
+        Client[Client Application]
+    end
+
+    subgraph "Google Cloud Platform"
+        CR[Cloud Run: menu-service]
+        MSC[Container: Quarkus App]
+        VPC[Serverless VPC Connector]
+        DB[(Cloud SQL for PostgreSQL)]
+    end
+
+    Client -- HTTP Request (e.g., GET /menu) --> CR
+    CR -- Routes Request --> MSC
+    MSC -- SQL Query --> VPC
+    VPC -- Forwards to Private IP --> DB
+    DB -- Returns Query Results --> VPC
+    VPC -- Forwards Results --> MSC
+    MSC -- Formats JSON Response --> CR
+    CR -- HTTP Response --> Client
+```

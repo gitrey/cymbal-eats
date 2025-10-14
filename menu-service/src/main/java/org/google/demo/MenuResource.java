@@ -13,6 +13,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
 
 import io.quarkus.panache.common.Sort;
@@ -60,7 +61,7 @@ public class MenuResource {
     
     @POST
     @Transactional
-    public Response create(Menu menu) {
+    public Response create(@Valid Menu menu) {
         if (menu == null || menu.id != null) 
             throw new WebApplicationException("id != null");
             menu.status=Status.Processing;
@@ -85,6 +86,8 @@ public class MenuResource {
         if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
         if (menu.itemThumbnailURL != null) entity.itemThumbnailURL = menu.itemThumbnailURL;
         if (menu.status != null) entity.status = menu.status;
+        if (menu.description != null) entity.description = menu.description;
+        if (menu.rating != null) entity.rating = menu.rating;
 
         return entity;
     }

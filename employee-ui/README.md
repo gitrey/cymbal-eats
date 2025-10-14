@@ -54,3 +54,16 @@ gcloud run deploy cymbal-eats-client \
 --allow-unauthenticated \
 -q
 ```
+
+
+# UI to code
+Analyze UI changes between current-ui.png and updated-ui.png images and provide summary.
+apply changes in the employee-ui app
+
+
+# UI tests automation
+Check that menu item cards have rating property displayed on this page “https://employee-ui-service-713244360550.us-central1.run.app/0#/view-menu”. If its not there, open a new JIRA issue for the team to look into it. JIRA instance is genai4dev.atlassian.net. Close the browser after you are done.
+
+
+# Security code scan
+Run security code scan for employee-ui application and report issues.

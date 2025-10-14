@@ -13,6 +13,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 @Entity
 public class Menu extends PanacheEntity {
     
@@ -36,6 +40,15 @@ public class Menu extends PanacheEntity {
 
     @Column(name="item_status")
     public Status status;
+
+    @Column(name="description")
+    public String description;
+
+    @NotNull
+    @Min(1)
+    @Max(5)
+    @Column(name="rating")
+    public Integer rating;
 
     @CreationTimestamp
     @Column(name="creation_timestamp")

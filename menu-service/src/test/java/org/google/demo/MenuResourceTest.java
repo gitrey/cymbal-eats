@@ -52,6 +52,8 @@ public class MenuResourceTest {
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = 4;
 
         given()
             .contentType(ContentType.JSON)
@@ -61,6 +63,48 @@ public class MenuResourceTest {
             .statusCode(200)
             .body("id", notNullValue())
             .body("itemName", is("Test Item"));
+    }
+
+    @Test
+    public void testCreateMenuWithInvalidRating() {
+        Menu menu = new Menu();
+        menu.itemName = "Test Item";
+        menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
+        menu.spiceLevel = 1;
+        menu.tagLine = "Test Tagline";
+        menu.itemImageURL = null; // Set to null or a valid URL
+        menu.itemThumbnailURL = null; // Set to null or a valid URL
+        menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = 6;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().post("/menu")
+            .then()
+            .statusCode(400);
+    }
+
+    @Test
+    public void testCreateMenuWithNullRating() {
+        Menu menu = new Menu();
+        menu.itemName = "Test Item";
+        menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
+        menu.spiceLevel = 1;
+        menu.tagLine = "Test Tagline";
+        menu.itemImageURL = null; // Set to null or a valid URL
+        menu.itemThumbnailURL = null; // Set to null or a valid URL
+        menu.status = Status.Ready;
+        menu.description = "Test Description";
+        menu.rating = null;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().post("/menu")
+            .then()
+            .statusCode(400);
     }
 
 }

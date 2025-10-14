@@ -1,0 +1,32 @@
+graph TD
+    subgraph "User Authentication"
+        A[Employee] --> B{Access Employee UI URL};
+        B --> C[IAP Proxy];
+        C --> D{Valid Google Session?};
+        D -- No --> E[Google Sign-In Page];
+        E --> F[Authenticate];
+        F --> C;
+        D -- Yes --> G[Employee UI Application];
+    end
+
+    subgraph "Application Interaction"
+        G --> H{Select Action};
+        H -- View Kitchen Orders --> I[KitchenPage.vue];
+        I --> J[Order Service API];
+        J --> K[Order Database];
+        K --> J;
+        J --> I;
+
+        H -- View/Edit Menu --> L[MenuPage.vue];
+        L --> M[Menu Service API];
+        M --> N[Menu Database];
+        N --> M;
+        M --> L;
+
+        H -- Add Menu Item --> O[AddMenuItemPage.vue];
+        O --> P[Menu Service API];
+        P --> Q[Menu Database];
+    end
+
+    style IAP fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#bbf,stroke:#333,stroke-width:2px
