@@ -24,11 +24,9 @@ public class MenuResourceTest {
     @BeforeEach
     public void setup() {
         Menu menu = new Menu();
-        menu.id = 1L;
-        menu.itemName = "Test Item";
-        menu.itemPrice = BigDecimal.valueOf(10.0);
-        menu.spiceLevel = 1;
         menu.tagLine = "Test Tagline";
+        menu.description = "Test Description";
+        menu.rating = 5;
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
@@ -61,6 +59,30 @@ public class MenuResourceTest {
             .statusCode(200)
             .body("id", notNullValue())
             .body("itemName", is("Test Item"));
+    }
+    @Test
+    public void testCreateMenuWithDescriptionAndRating() {
+        Menu menu = new Menu();
+        menu.itemName = "Test Item";
+        menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
+        menu.spiceLevel = 1;
+        menu.tagLine = "Test Tagline";
+        menu.description = "Test Description";
+        menu.rating = 5;
+        menu.itemImageURL = null;
+        menu.itemThumbnailURL = null;
+        menu.status = Status.Ready;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().post("/menu")
+            .then()
+            .statusCode(200)
+            .body("id", notNullValue())
+            .body("itemName", is("Test Item"))
+            .body("description", is("Test Description"))
+            .body("rating", is(5));
     }
 
 }

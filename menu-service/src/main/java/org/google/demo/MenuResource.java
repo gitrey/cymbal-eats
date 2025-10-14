@@ -81,6 +81,8 @@ public class MenuResource {
         if (menu.itemName != null) entity.itemName=menu.itemName;
         if (menu.itemPrice != null) entity.itemPrice=menu.itemPrice;
         if (menu.tagLine != null) entity.tagLine=menu.tagLine;
+        if (menu.description != null) entity.description = menu.description;
+        entity.rating = menu.rating;
         entity.spiceLevel=menu.spiceLevel;
         if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
         if (menu.itemThumbnailURL != null) entity.itemThumbnailURL = menu.itemThumbnailURL;
