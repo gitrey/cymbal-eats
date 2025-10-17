@@ -22,11 +22,17 @@ public class Menu extends PanacheEntity {
     @Column(name="item_price")
     public BigDecimal itemPrice;
 
+    @Column(name="item_rating", columnDefinition = "integer default 0")
+    public int rating;
+
     @Column(name="default_spice_level", columnDefinition =  "integer default 0")
     public int spiceLevel;
 
     @Column(name="tag_line")
     public String tagLine; //"sweets delight", "super spicy"
+
+    @Column(name="item_description")
+    public String description;
 
     @Column(name="item_image_url")
     public URL itemImageURL;
