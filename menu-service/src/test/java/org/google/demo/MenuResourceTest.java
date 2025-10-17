@@ -28,7 +28,9 @@ public class MenuResourceTest {
         menu.itemName = "Test Item";
         menu.itemPrice = BigDecimal.valueOf(10.0);
         menu.spiceLevel = 1;
+        menu.rating = 5;
         menu.tagLine = "Test Tagline";
+        menu.description = "Test Description";
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
@@ -48,7 +50,9 @@ public class MenuResourceTest {
         menu.itemName = "Test Item";
         menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
         menu.spiceLevel = 1;
+        menu.rating = 5;
         menu.tagLine = "Test Tagline";
+        menu.description = "Test Description";
         menu.itemImageURL = null; // Set to null or a valid URL
         menu.itemThumbnailURL = null; // Set to null or a valid URL
         menu.status = Status.Ready;
@@ -60,7 +64,9 @@ public class MenuResourceTest {
             .then()
             .statusCode(200)
             .body("id", notNullValue())
-            .body("itemName", is("Test Item"));
+            .body("itemName", is("Test Item"))
+            .body("rating", is(5))
+            .body("description", is("Test Description"));
     }
 
 }
