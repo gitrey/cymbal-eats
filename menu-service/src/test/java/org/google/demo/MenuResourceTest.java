@@ -24,6 +24,10 @@ public class MenuResourceTest {
     @BeforeEach
     public void setup() {
         Menu menu = new Menu();
+        menu.id = 1L;
+        menu.itemName = "Test Item";
+        menu.itemPrice = BigDecimal.valueOf(10.0);
+        menu.spiceLevel = 1;
         menu.tagLine = "Test Tagline";
         menu.description = "Test Description";
         menu.rating = 5;
@@ -85,4 +89,43 @@ public class MenuResourceTest {
             .body("rating", is(5));
     }
 
+    @Test
+    public void testRatingValidation() {
+        Menu menu = new Menu();
+        menu.itemName = "Test Item";
+        menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
+        menu.spiceLevel = 1;
+        menu.tagLine = "Test Tagline";
+        menu.description = "Test Description";
+        menu.itemImageURL = null;
+        menu.itemThumbnailURL = null;
+        menu.status = Status.Ready;
+
+        // Test for null rating
+        menu.rating = null;
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().post("/menu")
+            .then()
+            .statusCode(400);
+
+        // Test for rating less than 1
+        menu.rating = 0;
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().post("/menu")
+            .then()
+            .statusCode(400);
+
+        // Test for rating greater than 5
+        menu.rating = 6;
+        given()
+            .contentType(ContentType.JSON)
+            .body(menu)
+            .when().post("/menu")
+            .then()
+            .statusCode(400);
+    }
 }
