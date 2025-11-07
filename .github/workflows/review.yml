@@ -17,9 +17,9 @@ jobs:
       - run: cd ${{ github.workspace }}/menu-service
       - run: npm install -g @google/gemini-cli
 
-      - name: Comments Coverage Review
-        run: echo '## Comments Coverage Review Results 🚀' >> $GITHUB_STEP_SUMMARY
-      - run: gemini -p 'review menu-service java code and check that all classes are properly documented and provide suggestions on how to improve the comments in the code and return findings as text in markdown format to the console' >> $GITHUB_STEP_SUMMARY
+      - name: Documentation Coverage Review
+        run: echo '## Documentation Coverage Review Results 🚀' >> $GITHUB_STEP_SUMMARY
+      - run: gemini -p 'review menu-service java code and check that all classes are properly documented and provide suggestions on how to improve the documentation in the code and return findings as text in markdown format to the console' >> $GITHUB_STEP_SUMMARY
         shell: bash
 
       - name: Test Coverage Review
