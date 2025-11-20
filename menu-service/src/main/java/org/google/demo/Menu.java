@@ -45,6 +45,12 @@ public class Menu extends PanacheEntity {
     @Column(name="update_timestamp")
     public LocalDateTime updateDateTime;
 
+    @Column(name="description")
+    public String description;
+
+    @Column(name="rating")
+    public Double rating;
+
     public static List<Menu> findReady() {
         return list("status", Status.Ready);
     }
