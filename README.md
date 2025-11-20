@@ -102,3 +102,20 @@ Run script in the root of the repo:
 ```bash
 ./get-site-users.sh
 ```
+Reqs to code:
+What's the context of GENDEV-37 jira user story?
+What are the test cases in the menu-service rating capabilities confluence page?
+Update jira story to in progress and Implement the changes. For test cases, create new test methods.
+
+Security code scan:
+Run security code scan for employee-ui application and report issues.
+
+
+UI tests automation
+Check that menu item cards have rating property displayed on this page “https://employee-ui-service-713244360550.us-central1.run.app/0#/view-menu”. If its not there, open a new JIRA issue for the team to look into it. JIRA instance is genai4dev.atlassian.net. Close the browser after you are done.
+
+
+
+UI to code
+Analyze UI changes between current-ui.png and updated-ui.png images and provide summary.
+apply changes in the employee-ui app

@@ -7,7 +7,9 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -27,6 +29,15 @@ public class Menu extends PanacheEntity {
 
     @Column(name="tag_line")
     public String tagLine; //"sweets delight", "super spicy"
+
+    @Column(name="description")
+    public String description;
+
+    @NotNull
+    @Min(1)
+    @Max(5)
+    @Column(name="rating")
+    public Integer rating;
 
     @Column(name="item_image_url")
     public URL itemImageURL;

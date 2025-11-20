@@ -3,6 +3,7 @@ package org.google.demo;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -60,7 +61,7 @@ public class MenuResource {
     
     @POST
     @Transactional
-    public Response create(Menu menu) {
+    public Response create(@Valid Menu menu) {
         if (menu == null || menu.id != null) 
             throw new WebApplicationException("id != null");
             menu.status=Status.Processing;
@@ -81,6 +82,8 @@ public class MenuResource {
         if (menu.itemName != null) entity.itemName=menu.itemName;
         if (menu.itemPrice != null) entity.itemPrice=menu.itemPrice;
         if (menu.tagLine != null) entity.tagLine=menu.tagLine;
+        if (menu.description != null) entity.description=menu.description;
+        if (menu.rating != null) entity.rating=menu.rating;
         entity.spiceLevel=menu.spiceLevel;
         if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
         if (menu.itemThumbnailURL != null) entity.itemThumbnailURL = menu.itemThumbnailURL;

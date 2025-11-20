@@ -1,0 +1,20 @@
+graph TD
+    subgraph Client
+        A[Client e.g., Employee/Customer UI]
+    end
+
+    subgraph "Google Cloud"
+        B[API Gateway]
+        C[Cloud Run: Menu Service]
+        D[Database]
+        E[Inventory Service]
+    end
+
+    A -- "1. API Request (e.g., GET /menus)" --> B
+    B -- "2. Route to Menu Service" --> C
+    C -- "3. Fetch data from DB" --> D
+    D -- "4. Return menu data" --> C
+    C -- "5. Check stock via Inventory Service" --> E
+    E -- "6. Return inventory levels" --> C
+    C -- "7. Formulate Response" --> B
+    B -- "8. Return Response to Client" --> A

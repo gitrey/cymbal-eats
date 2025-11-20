@@ -1,0 +1,18 @@
+graph TD
+    subgraph "User's Browser"
+        A[User interacts with Employee UI]
+    end
+
+    subgraph "Google Cloud"
+        B[Cloud Run: Employee UI Server]
+        C[Backend API Services]
+        D[Database]
+    end
+
+    A -- "1. HTTP Request" --> B
+    B -- "2. Serves SPA assets" --> A
+    A -- "3. Renders UI, makes API call" --> C
+    C -- "4. Processes request" --> D
+    D -- "5. Returns data" --> C
+    C -- "6. API Response" --> A
+    A -- "7. UI updates" --> A
