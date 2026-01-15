@@ -5,6 +5,12 @@ An app for hungry people
 Add a bucket that is public read + write.
 "allUsers" should have the role "Storage Object Viewer".
 
+## Features
+
+* View and manage orders in real-time.
+* Update the status of orders as they are prepared and picked up.
+* Add, edit, and delete menu items.
+
 ## Install the dependencies
 ```bash
 npm install

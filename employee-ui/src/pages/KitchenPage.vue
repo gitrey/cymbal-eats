@@ -1,3 +1,6 @@
+<!--
+  Displays a list of orders, and allows the user to view and update the status of each order.
+-->
 <template>
   <q-layout view="hhh lpr fff">
     <q-header elevated>
@@ -8,6 +11,7 @@
 
       <div class="q-gutter-md q-pa-md">
 
+        <!-- List of orders -->
         <q-list
           bordered
           separator
@@ -35,6 +39,7 @@
 
         <hr>
 
+        <!-- Order details -->
         <q-card
           v-if="activeOrder.orderItems"
           class="q-pa-lg q-gutter-md"
@@ -118,7 +123,10 @@
       });
     });
   })
-
+  /**
+   * @desc Cancels an order and refunds the customer
+   * @param {string} orderNumber The order number to cancel
+   */
   async function cancelOrder(orderNumber) {
     if (confirm(`Are you sure you want to cancel order ${orderNumber}?`)) {
       try {
@@ -129,12 +137,20 @@
       }
     }
   }
-
+  /**
+   * @desc Checks if an order can be canceled
+   * @param {string} orderStatus The status of the order
+   * @returns {boolean} True if the order can be canceled, false otherwise
+   */
   function orderCanBeCanceled(orderStatus) {
     const allowedStatuses = ['New', 'Being prepared'];
     return allowedStatuses.includes(orderStatus);
   }
-
+  /**
+   * @desc Updates the status of an order
+   * @param {string} orderNumber The order number to update
+   * @param {string} newStatus The new status of the order
+   */
   async function updateOrderStatus(orderNumber, newStatus) {
     try {
       await Server.updateOrderStatus(orderNumber, newStatus);
