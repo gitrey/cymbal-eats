@@ -27,6 +27,8 @@ public class MenuResourceTest {
         menu.id = 1L;
         menu.itemName = "Test Item";
         menu.itemPrice = BigDecimal.valueOf(10.0);
+        menu.description = "Test Description";
+        menu.rating = 4;
         menu.spiceLevel = 1;
         menu.tagLine = "Test Tagline";
         menu.itemImageURL = null; // Set to null or a valid URL
@@ -47,6 +49,8 @@ public class MenuResourceTest {
         Menu menu = new Menu();
         menu.itemName = "Test Item";
         menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
+        menu.description = "Test Description";
+        menu.rating = 4;
         menu.spiceLevel = 1;
         menu.tagLine = "Test Tagline";
         menu.itemImageURL = null; // Set to null or a valid URL
