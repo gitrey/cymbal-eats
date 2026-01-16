@@ -15,12 +15,20 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 
+/**
+ * A test class for the MenuResource.
+ * This class tests the REST endpoints for the Menu resource.
+ */
 @QuarkusTest
 public class MenuResourceTest {
 
     @InjectMock
     MenuRepository menuRepository;
 
+    /**
+     * Sets up the mock repository before each test.
+     * This method is executed before each test and is used to set up the mock repository with some test data.
+     */
     @BeforeEach
     public void setup() {
         Menu menu = new Menu();
@@ -42,6 +50,11 @@ public class MenuResourceTest {
         }).when(menuRepository).persist(any(Menu.class));
     }
 
+    /**
+     * Tests the create menu endpoint.
+     * This test sends a POST request to the /menu endpoint to create a new menu item.
+     * It then verifies that the response has a status code of 200 and that the created menu item has the correct data.
+     */
     @Test
     public void testCreateMenu() {
         Menu menu = new Menu();
