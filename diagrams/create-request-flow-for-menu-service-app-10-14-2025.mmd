@@ -1,0 +1,32 @@
+flowchart TD
+    subgraph "Client"
+        A[Client Application]
+    end
+
+    subgraph "Google Cloud Platform"
+        B[API Gateway / Load Balancer]
+        C[Cloud Run Service]
+        D[Cloud SQL for PostgreSQL]
+    end
+
+    subgraph "Menu Service (Quarkus Application)"
+        E[RESTEasy Endpoint<br>(MenuResource.java)]
+        F[Business Logic<br>(e.g., create, update, find)]
+        G[Panache Repository<br>(MenuRepository.java)]
+        H[Hibernate ORM]
+    end
+
+    A -- HTTP Request --> B
+    B -- Forwards Request --> C
+    C -- Receives Request --> E
+    E -- Invokes Method --> F
+    F -- Calls Repository --> G
+    G -- Uses Hibernate --> H
+    H -- Generates SQL --> D
+    D -- Executes Query & Returns Data --> H
+    H -- Maps Data to Entities --> G
+    G -- Returns Entities --> F
+    F -- Prepares Response --> E
+    E -- Serializes to JSON --> C
+    C -- Sends HTTP Response --> B
+    B -- Forwards Response --> A
