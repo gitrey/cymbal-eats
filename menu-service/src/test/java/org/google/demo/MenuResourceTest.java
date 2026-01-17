@@ -26,6 +26,7 @@ public class MenuResourceTest {
         Menu menu = new Menu();
         menu.id = 1L;
         menu.itemName = "Test Item";
+        menu.description = "Test Description";
         menu.itemPrice = BigDecimal.valueOf(10.0);
         menu.spiceLevel = 1;
         menu.tagLine = "Test Tagline";
@@ -46,6 +47,7 @@ public class MenuResourceTest {
     public void testCreateMenu() {
         Menu menu = new Menu();
         menu.itemName = "Test Item";
+        menu.description = "Test Description";
         menu.itemPrice = java.math.BigDecimal.valueOf(10.0);
         menu.spiceLevel = 1;
         menu.tagLine = "Test Tagline";
