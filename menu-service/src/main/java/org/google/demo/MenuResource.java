@@ -15,9 +15,12 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import jakarta.validation.Valid;
+
 import io.quarkus.panache.common.Sort;
 
 import jakarta.inject.Inject;
+
 
 @Path("/menu")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -60,7 +63,7 @@ public class MenuResource {
     
     @POST
     @Transactional
-    public Response create(Menu menu) {
+    public Response create(@Valid Menu menu) {
         if (menu == null || menu.id != null) 
             throw new WebApplicationException("id != null");
             menu.status=Status.Processing;
@@ -80,6 +83,8 @@ public class MenuResource {
 
         if (menu.itemName != null) entity.itemName=menu.itemName;
         if (menu.itemPrice != null) entity.itemPrice=menu.itemPrice;
+        if (menu.description != null) entity.description=menu.description;
+        entity.rating=menu.rating;
         if (menu.tagLine != null) entity.tagLine=menu.tagLine;
         entity.spiceLevel=menu.spiceLevel;
         if (menu.itemImageURL != null) entity.itemImageURL = menu.itemImageURL;
